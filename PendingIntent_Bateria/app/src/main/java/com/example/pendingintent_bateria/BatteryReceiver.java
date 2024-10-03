@@ -4,29 +4,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
+import android.util.Log;
 
 public class BatteryReceiver extends BroadcastReceiver {
-    private MainActivity mainActivity;
-
-    public BatteryReceiver(MainActivity activity) {
-        this.mainActivity = activity;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Obtener el nivel de batería
+        // Obtener el nivel de la batería
         int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        int batteryLevel = (int) ((level / (float) scale) * 100);  // Calcular porcentaje
+        float batteryPct = level / (float) scale * 100;
 
-        // Actualizar la interfaz de usuario
-        mainActivity.updateBatteryLevel(batteryLevel);
+        // Mostrar información en Logcat
+        Log.i("BatteryReceiver", "Nivel de batería: " + batteryPct + "%");
 
-        // Actualizar el mensaje de advertencia si el nivel es bajo
-        if (batteryLevel < 15) {
-            mainActivity.showBatteryWarning("¡Batería baja!");
-        } else {
-            mainActivity.showBatteryWarning("");
+        // Actualizar la interfaz de usuario (esto se haría desde la actividad)
+        if (context instanceof MainActivity) {
+            ((MainActivity) context).updateBatteryLevel(batteryPct);
         }
     }
 }
